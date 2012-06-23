@@ -22,7 +22,7 @@ module Converter
 		target
 	end
 
-	def self.ConvertBack(target, sourceType)
+	def self.convertBack(target, sourceType)
 		source = sourceType.new
 		source.methods.grep(/[a-zA-Z0-9]=$/).each do |varName|
 			varNameTrimmed = varName.to_s.delete('=').to_sym
