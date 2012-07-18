@@ -4,7 +4,9 @@ Converter gem
 Getting started
 ---------------
 
-Create two type you would like to convert between them.
+Create two classes
+
+The first one should be normal class like Person:.
 
     class Person
       attr_accessor :fname
@@ -17,6 +19,16 @@ Create two type you would like to convert between them.
       attr_accessor :onlyPersonAttribute
     end
 
+The second class should user attr_converter instead of attr_accessor,
+this allows Converter gem to recognize which attributes
+it should convert.
+
+you can specify various of properties:
+1. The target accessor name as done with first_name accessor on PersonDTO
+2. A lambda used to convert data from the source to the target
+3. A lambda used to convert data from the target to the source
+
+Here an example of PersonDto:
     class PersonDto
      include Converter
 
@@ -30,7 +42,7 @@ Create two type you would like to convert between them.
       attr_accessor :onlyPersonDtoAttribute
     end
 
-Now create instance of PersonDTO:
+If we will create instance of PersonDTO:
     p_dto = PersonDto.new
     p_dto.first_name = 'Robert'
     p_dto.last_name = 'De niro'
@@ -41,7 +53,7 @@ Now create instance of PersonDTO:
     p_dto.money_as_string = '321654987'
     p_dto.onlyPersonDtoAttribute = 'lalala'
 
-To convert from PersonDTO to Person user ConvertMethods:
+we can now convert it to Person:
     p = Converter.convert(p_dto, Person)
 
 To Convert from Preson to PersonDTO user ConvertBack:

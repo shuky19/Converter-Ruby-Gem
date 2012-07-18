@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ea78267e-e77c-4f91-b541-9de947f51a39" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Converter.gemspec" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/README.md" />
       <change type="DELETED" beforePath="D:\Users\Shuky\RubymineProjects\Converter\Converter-Ruby-Gem\.idea\.name" afterPath="" />
       <change type="DELETED" beforePath="D:\Users\Shuky\RubymineProjects\Converter\Converter-Ruby-Gem\Converter.html" afterPath="" />
       <change type="DELETED" beforePath="D:\Users\Shuky\RubymineProjects\Converter\Converter-Ruby-Gem\Converter\ClassConverter.html" afterPath="" />
@@ -83,7 +80,7 @@
       <change type="DELETED" beforePath="D:\Users\Shuky\RubymineProjects\Converter\Converter-Ruby-Gem\rdoc.css" afterPath="" />
       <change type="DELETED" beforePath="D:\Users\Shuky\RubymineProjects\Converter\Converter-Ruby-Gem\table_of_contents.html" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MOVED" beforePath="D:\Users\Shuky\RubymineProjects\Converter\Converter-Ruby-Gem\Converter.rb" afterPath="$PROJECT_DIR$/lib/Converter.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
     </list>
     <ignored path="Converter-Ruby-Gem.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -104,7 +101,17 @@
     <favorites_list name="Converter-Ruby-Gem" />
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf>
+      <file leaf-file-name="README.md" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="58" column="0" selection-start="1672" selection-end="1672" vertical-scroll-proportion="0.7684825">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -286,13 +293,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.13050076" sideWeight="0.8865132" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.13050076" sideWeight="0.8865132" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.11348684" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -384,16 +391,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
+    <entry file="file://$PROJECT_DIR$/../../Converter2/ConverterTest.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="47" column="47" selection-start="1359" selection-end="1359" vertical-scroll-proportion="0.78969073">
+        <state line="41" column="43" selection-start="1050" selection-end="1091" vertical-scroll-proportion="0.6845361">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../Converter2/ConverterTest.rb">
+    <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="43" selection-start="1050" selection-end="1091" vertical-scroll-proportion="0.6845361">
+        <state line="58" column="0" selection-start="1672" selection-end="1672" vertical-scroll-proportion="0.7684825">
           <folding />
         </state>
       </provider>
