@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ea78267e-e77c-4f91-b541-9de947f51a39" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Converter.rb" afterPath="$PROJECT_DIR$/Converter.rb" />
     </list>
     <ignored path="Converter-Ruby-Gem.iws" />
@@ -27,7 +28,7 @@
       <file leaf-file-name="Converter.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Converter.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="56" selection-start="390" selection-end="390" vertical-scroll-proportion="0.44386423">
+            <state line="8" column="18" selection-start="246" selection-end="246" vertical-scroll-proportion="0.3550914">
               <folding />
             </state>
           </provider>
@@ -283,7 +284,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Converter.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="56" selection-start="390" selection-end="390" vertical-scroll-proportion="0.44386423">
+        <state line="8" column="18" selection-start="246" selection-end="246" vertical-scroll-proportion="0.3550914">
           <folding />
         </state>
       </provider>

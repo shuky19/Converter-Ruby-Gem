@@ -6,9 +6,9 @@ module Converter
   end
 
   # Create new Target_Type instance according to Conversion definition
-  #@param [source] The instance to copy from
-  #@param [target_type] to target type to create instance of
-  #@return instance of target_type with data from source
+  # @param [source] The instance to copy from
+  # @param [target_type] to target type to create instance of
+  # @return instance of target_type with data from source
   def self.convert(source, target_type)
     # Create new target instance
     target = target_type.new
