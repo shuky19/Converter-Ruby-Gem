@@ -30,6 +30,7 @@ you can specify various of properties with "attr_converter":
 3. A lambda used to convert data from the target to the source(if they are not of the same class)
 
 Here an example of PersonDto:
+
     class PersonDto
      include Converter
 
@@ -49,6 +50,7 @@ Here an example of PersonDto:
     end
 
 If we will create instance of PersonDTO:
+
         p_dto = PersonDto.new
         p_dto.first_name = 'Robert'
         p_dto.last_name = 'De niro'
@@ -65,6 +67,7 @@ Result:
  @money_as_string="321654987", @onlyPersonDtoAttribute="lalala"}
 
 we could now convert it to Person:
+
     p = Converter.convert(p_dto, Person)
 
 Result:
@@ -73,6 +76,7 @@ Result:
   @cash_as_int=321654987, @onlyPersonAttribute="asdasdasd"}
 
 To Convert from Preson to PersonDTO user ConvertBack:
+
     p_dto = Converter.convertBack(p, PersonDto)
 
 Result:
