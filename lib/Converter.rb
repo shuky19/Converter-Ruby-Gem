@@ -65,10 +65,10 @@ module Converter
   module ClassConverter
     # Create an attr_accessor and map this attribute as convertable ,
     # this means that this attribute will be converted when calling to Convert/
-    # param [symbol] symbol attribute name
-    # param [symbol] another_name the name of the converter attribute(on the target)
-    # param [block] convert_block block that convert the source data type to the target data type
-    # param [block] convert_back_block block that convert the target data type to the source data type
+    # @param [symbol] symbol attribute name
+    # @param [symbol] another_name the name of the converter attribute(on the target)
+    # @param [block] convert_block block that convert the source data type to the target data type
+    # @param [block] convert_back_block block that convert the target data type to the source data type
     def attr_converter(symbol, attr_another_name = nil, convert_bock = nil, convert_back_block = nil)
       # Set default values for nil arguments
       attr_another_name ||= symbol
