@@ -4,7 +4,7 @@ Converter gem
 Getting started
 ---------------
 
-The first class you create should be normal class like this::
+The first class you create should bea  normal class like this:
 
     class Person
       attr_accessor :fname
@@ -37,6 +37,9 @@ Here an example of PersonDto:
       # This is a declaration of attr_converter that describe "first_name" accessor of PersonDTO class
       #  and maps it to "fname" accessor of Person class
       attr_converter :first_name, :fname
+
+     # The declarations in this section describe an accessor of PersonDTO class
+     #  and maps it to accessor with the same name on Person class
       attr_converter :last_name
       attr_converter :country_name
       attr_converter :remark
@@ -83,3 +86,76 @@ Result:
 => [#PersonDto:0x2d3c4e
          0 @first_name="Robert", @last_name="De niro", @country_name="Lala land", @city_name="a city name",
          @remark="good actor", @phone_number="65432165498", @money_as_string="321654987"}
+
+
+Getting Deeper
+-------------------
+
+We can user Converter module into extreme by converting
+entire graph of objects.
+
+Lets create a Dog class:
+
+    class Dog
+      attr_accessor :name
+      attr_accessor :age
+    end
+
+and extend Person class to include dog:
+
+    class Person
+        attr_accessor dog
+    end
+
+now we should do the same with PersonDto:
+
+    class dogDTO
+        attr_converter :dog_name, :name
+         attr_converter :age
+    end
+
+    class PersonDTO
+        attr_converter :dogDTO, :dog, lambda { |v| Converter.convert(v, Dog)}, lambda { |v| Converter.convertBack(v, DogDTO)}
+    end
+
+Lets Convert them!
+
+     p_dto = PersonDto.new
+     p_dto.first_name = 'Robert'
+     p_dto.last_name = 'De niro'
+     p_dto.country_name = 'Lala land'
+     p_dto.city_name = 'a city name'
+     p_dto.remark = 'good actor'
+     p_dto.phone_number = '65432165498'
+     p_dto.money_as_string = '321654987'
+     p_dto.onlyPersonDtoAttribute = 'lalala'
+     p_dto.dogDTO = DogDTO.new
+     p_dto.dogDTOd.dog_name = "papi"
+     p_dto.dogDTOd.age=7
+
+Result:
+
+     => [#PersonDto:0x2be8fb8 @first_name="Robert", @last_name="De niro", @country_name="Lala land",
+                                                       @city_name="a city name", @remark="good actor", @phone_number="65432165498",
+                                                       @money_as_string="321654987", @onlyPersonDtoAttribute="lalala",
+                                                       @dogDTO=#DogDTO:0x2be8e98 @age=7, @dog_name="papi"}
+
+we could now convert it to Person:
+
+    p = Converter.convert(p_dto, Person)
+
+Result:
+
+     => {#Person:0x2be8e68 @fname="Robert", @last_name="De niro", @country_name="Lala land", @city_name="a city name",
+                                                 @remark="good actor", @phone_number="65432165498", @cash_as_int=321654987,
+                                                 @onlyPersonAttribute="asdasdasd", @dog=#Dog:0x2be8880 @age=7, @name="papi"}
+
+
+To Convert from Preson to PersonDTO user ConvertBack:
+
+    p_dto = Converter.convertBack(p, PersonDto)
+
+Result:
+    => [#PersonDto:0x2be86e8 @first_name="Robert", @last_name="De niro", @country_name="Lala land",
+                                                      @city_name="a city name", @remark="good actor", @phone_number="65432165498",
+                                                      @money_as_string="321654987", @dog=#DogDTO:0x2bace98 @age=7, @dog_name="papi"}
