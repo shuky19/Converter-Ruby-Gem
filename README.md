@@ -65,33 +65,36 @@ If we will create instance of PersonDTO:
         p_dto.onlyPersonDtoAttribute = 'lalala'
 
 Result:
- => [#PersonDto:0x2d3cac8 @first_name="Robert", @last_name="De niro", @country_name="Lala land",
- @city_name="a city name", @remark="good actor", @phone_number="65432165498",
- @money_as_string="321654987", @onlyPersonDtoAttribute="lalala"}
+
+     => [#PersonDto:0x2d3cac8 @first_name="Robert", @last_name="De niro", @country_name="Lala land",
+     @city_name="a city name", @remark="good actor", @phone_number="65432165498",
+     @money_as_string="321654987", @onlyPersonDtoAttribute="lalala"}
 
 we could now convert it to Person:
 
     p = Converter.convert(p_dto, Person)
 
 Result:
- => [#Person:0x2d3c9d8 @fname="Robert", @last_name="De niro", @country_name="Lala land",
-  @city_name="a city name", @remark="good actor", @phone_number="65432165498",
-  @cash_as_int=321654987, @onlyPersonAttribute="asdasdasd"}
+
+     => [#Person:0x2d3c9d8 @fname="Robert", @last_name="De niro", @country_name="Lala land",
+      @city_name="a city name", @remark="good actor", @phone_number="65432165498",
+      @cash_as_int=321654987, @onlyPersonAttribute="asdasdasd"}
 
 To Convert from Preson to PersonDTO user ConvertBack:
 
     p_dto = Converter.convertBack(p, PersonDto)
 
 Result:
-=> [#PersonDto:0x2d3c4e
-         0 @first_name="Robert", @last_name="De niro", @country_name="Lala land", @city_name="a city name",
-         @remark="good actor", @phone_number="65432165498", @money_as_string="321654987"}
+
+    => [#PersonDto:0x2d3c4e
+             0 @first_name="Robert", @last_name="De niro", @country_name="Lala land", @city_name="a city name",
+             @remark="good actor", @phone_number="65432165498", @money_as_string="321654987"}
 
 
 Getting Deeper
 -------------------
 
-We can user Converter module into extreme by converting
+We can take Converter module into extreme by converting
 entire graph of objects.
 
 Lets create a Dog class:
@@ -156,6 +159,7 @@ To Convert from Preson to PersonDTO user ConvertBack:
     p_dto = Converter.convertBack(p, PersonDto)
 
 Result:
+
     => [#PersonDto:0x2be86e8 @first_name="Robert", @last_name="De niro", @country_name="Lala land",
                                                       @city_name="a city name", @remark="good actor", @phone_number="65432165498",
                                                       @money_as_string="321654987", @dog=#DogDTO:0x2bace98 @age=7, @dog_name="papi"}
