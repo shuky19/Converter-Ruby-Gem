@@ -6,8 +6,8 @@ module Converter
   end
 
   # Create new Target_Type instance according to Conversion definition
-  # @param [source] The instance to copy from
-  # @param [target_type] to target type to create instance of
+  # @param [Any Class] source instance to copy from
+  # @param [class] target_type the result type
   # @return instance of target_type with data from source
   def self.convert(source, target_type)
     # Create new target instance
@@ -16,7 +16,7 @@ module Converter
     # Gets source Conversion definition
     conversion_properties = source.class.class_eval { @attribute_converter}
 
-    # update each accessor on the target according to the conversion definition
+    # update each accessor on the target according to the attr_converters
     source.instance_variables.each do |var|
       var_name = var.to_s.delete('@').to_sym
 
@@ -33,6 +33,10 @@ module Converter
     target
   end
 
+  # Create new source_type instance according to attr_converters
+  # @param [Any Class] target instance to copy from
+  # @param [class] source_type the result type
+  # @return instance of source_type with data from source
   def self.convertBack(target, source_type)
     # Create new target instance
     source = source_type.new
@@ -59,6 +63,12 @@ module Converter
 
   # This module add class extension of attr_converter
   module ClassConverter
+    # Create an attr_accessor and map this attribute as convertable ,
+    # this means that this attribute will be converted when calling to Convert/
+    # param [symbol] symbol attribute name
+    # param [symbol] another_name the name of the converter attribute(on the target)
+    # param [block] convert_block block that convert the source data type to the target data type
+    # param [block] convert_back_block block that convert the target data type to the source data type
     def attr_converter(symbol, attr_another_name = nil, convert_bock = nil, convert_back_block = nil)
       # Set default values for nil arguments
       attr_another_name ||= symbol
