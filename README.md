@@ -118,7 +118,9 @@ now we should do the same with PersonDto:
     end
 
     class PersonDTO
-        attr_converter :dogDTO, :dog, lambda { |v| Converter.convert(v, Dog)}, lambda { |v| Converter.convertBack(v, DogDTO)}
+        # This assign the types of dogDto to DogDto and dog to Dog
+        # and it will allow the converter to convert those type automatically!
+        attr_converter :dogDTO, :dog, :DogDto, :Dog
     end
 
 Lets Convert them!
@@ -163,3 +165,32 @@ Result:
     => [#PersonDto:0x2be86e8 @first_name="Robert", @last_name="De niro", @country_name="Lala land",
                                                       @city_name="a city name", @remark="good actor", @phone_number="65432165498",
                                                       @money_as_string="321654987", @dog=#DogDTO:0x2bace98 @age=7, @dog_name="papi"}
+
+
+What about Circular pointing?
+--------------
+
+Lets say dog has accessor to his person:
+
+  class dogDTO
+        attr_converter :dog_name, :name
+        attr_converter :age
+        attr_converter :personDto
+  end
+
+  class dog
+        attr_converter :name, :dog_name
+        attr_converter :age
+        attr_converter :person
+  end
+
+now what will happend? well Converter has a support for it,
+the result of the conversion will do the expected:
+
+   p = Converter.convert(p_dto, Person)
+
+Result:
+
+   => {#Person:0x2be8e68 @fname="Robert", @last_name="De niro", @country_name="Lala land", @city_name="a city name",
+                                                 @remark="good actor", @phone_number="65432165498", @cash_as_int=321654987,
+                                                 @onlyPersonAttribute="asdasdasd", @dog=#Dog:0x2be8880 @age=7, @name="papi, @person=#Person:0x2be8e68 ..."}
