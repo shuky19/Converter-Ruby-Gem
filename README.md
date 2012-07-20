@@ -172,25 +172,25 @@ What about Circular pointing?
 
 Lets say dog has accessor to his person:
 
-  class dogDTO
-        attr_converter :dog_name, :name
-        attr_converter :age
-        attr_converter :personDto
-  end
+    class dogDTO
+          attr_converter :dog_name, :name
+          attr_converter :age
+          attr_converter :personDto
+    end
 
-  class dog
-        attr_converter :name, :dog_name
-        attr_converter :age
-        attr_converter :person
-  end
+    class dog
+          attr_converter :name, :dog_name
+          attr_converter :age
+          attr_converter :person
+    end
 
 now what will happend? well Converter has a support for it,
 the result of the conversion will do the expected:
 
-   p = Converter.convert(p_dto, Person)
+      p = Converter.convert(p_dto, Person)     
 
 Result:
 
-   => {#Person:0x2be8e68 @fname="Robert", @last_name="De niro", @country_name="Lala land", @city_name="a city name",
-                                                 @remark="good actor", @phone_number="65432165498", @cash_as_int=321654987,
-                                                 @onlyPersonAttribute="asdasdasd", @dog=#Dog:0x2be8880 @age=7, @name="papi, @person=#Person:0x2be8e68 ..."}
+       => {#Person:0x2be8e68 @fname="Robert", @last_name="De niro", @country_name="Lala land", @city_name="a city name",
+                                                     @remark="good actor", @phone_number="65432165498", @cash_as_int=321654987,
+                                                     @onlyPersonAttribute="asdasdasd", @dog=#Dog:0x2be8880 @age=7, @name="papi, @person=#Person:0x2be8e68 ..."}
