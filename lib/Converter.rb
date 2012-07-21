@@ -4,125 +4,108 @@ module Converter
   def self.included(base)
     base.extend(ClassConverter)
   end
+  
+  def convert_to target_class
+    Converter.convert self, target_class
+  end
 
-  # Create new Target_Type instance according to Conversion definition
+  # Create new Target_Type instance according to the Conversion definition
+  # one of the classes (source.class or target_type) should include Converter module
   # @param [Any Class] source instance to copy from
   # @param [class] target_type the result type
-  # @return instance of target_type with data from source
+  # @return instance of target_type with data converted from source
   def self.convert(source, target_type, hash = {})
-    # Create new target instance
-    if(converted_target = hash[source])
-      return converted_target
+    # Check if the object has already been converted (Circular pointing)
+    if(converted_object = hash[source])
+      return converted_object
     end
 
     # Create new target instance
     hash[source] = target = target_type.new
-
+    
     # Gets source Conversion definition
-    conversion_properties = source.class.class_eval { @attribute_converter}
+    # Check which one includes Converter module
+    convertable_object = get_convertable_object source, target
+    conversion_metadatas = convertable_object.class.class_eval { @attribute_converter}
 
     # update each accessor on the target according to the attr_converters
-    source.instance_variables.each do |var|
-      var_name = var.to_s.delete('@').to_sym
-
-      # Get the conversion definition for the current accessor if exists
-      if convert_property = conversion_properties[var_name]
-        target_property_name = convert_property.target_property_name.to_s.concat('=').to_sym
-
-        # Convert from one type to another (by default doesn't do anything)
-        if convert_property.convert_block.parameters.count == 1
-          target_value = convert_property.convert_block.call(source.send(var_name))
-        else
-          target_value = convert_property.convert_block.call(source.send(var_name), hash)
-        end
-
-        target.send(target_property_name, target_value)
-      end
+    conversion_metadatas.values.each do |conversion_metadata|
+      convert_one_attribute source, target, conversion_metadata, source == convertable_object, hash
     end
 
     target
   end
 
-  # Create new source_type instance according to attr_converters
-  # @param [Any Class] target instance to copy from
-  # @param [class] source_type the result type
-  # @return instance of source_type with data from source
-  def self.convert_back(target, source_type, hash = {})
-    # Create new target instance
-    if(converted_source = hash[target])
-      return converted_source
-    end
-
-    # Create new source instance
-    hash[target] = source = source_type.new
-
-    # Gets source Conversion definition
-    conversion_properties = source.class.class_eval { @attribute_converter }
-
-    # update each accessor on the target according to the conversion definition
-    source.methods.grep(/[a-zA-Z0-9]=$/).each do |var_name|
-      var_name_trimmed = var_name.to_s.delete('=').to_sym
-
-      # Get the conversion definition for the current accessor if exists
-      if convert_property = conversion_properties[var_name_trimmed]
-        target_property_name = convert_property.target_property_name
-
-        # Convert from one type to another (by default doesn't do anything)
-        if convert_property.convert_back_block.parameters.count == 1
-          source_value = convert_property.convert_back_block.call(target.send(target_property_name))
-        else
-          source_value = convert_property.convert_back_block.call(target.send(target_property_name), hash)
-        end
-
-        source.send(var_name, source_value)
+  private
+    def self.get_convertable_object source, target
+      if source.class.included_modules.include? Converter
+        source
+      elsif target.class.included_modules.include? Converter
+        target
+      else
+        raise ArgumentError.new "One of the given classes should include Converter module"
       end
     end
 
-    source
-  end
+    def self.convert_one_attribute source, target, conversion_metadata, is_source_convertable, hash
+      source_attribute_name = is_source_convertable ? conversion_metadata.convertable_attribute_name : conversion_metadata.poro_attribute_name
+      convert_block = is_source_convertable ? conversion_metadata.convert_from_convertable_block : conversion_metadata.convert_from_poro_block
+      target_attribute_name = is_source_convertable ? conversion_metadata.poro_attribute_name : conversion_metadata.convertable_attribute_name
+      target_attribute_name = target_attribute_name.to_s.concat('=').to_sym
+
+      # Convert from one type to another (by default doesn't do anything)
+      if convert_block.parameters.count == 1
+        target_value = convert_block.call(source.send(source_attribute_name))
+      else
+        target_value = convert_block.call(source.send(source_attribute_name), hash)
+      end
+
+      target.send(target_attribute_name, target_value)
+    end
+
+  public
 
   # This module add class extension of attr_converter
   module ClassConverter
     # Create an attr_accessor and map this attribute as convertable ,
     # this means that this attribute will be converted when calling to Convert/
-    # @param [symbol] symbol attribute name
-    # @param [symbol] another_name the name of the converted attribute(on the target)
-    # @param [block] convert_block block that convert the source data type to the target data type
-    # @param [block] convert_back_block block that convert the target data type to the source data type
-    def attr_converter(symbol, attr_another_name = nil, convert_block = nil, convert_back_block = nil)
+    # @param [symbol] convertable_attribute_name class attribute name
+    # @param [symbol] poro_attribute_name the attribute name of a poro class (plain old ruby object)
+    # @param [block] convert_block block that convert between the convetable attribute class and the poro attribute class
+    # @param [block] convert_back_block block that convert between the poro attribute class and the convetable attribute class
+    def attr_converter(convertable_attribute_name, poro_attribute_name = nil, convert_block = nil, convert_back_block = nil)
       # Set default values for nil arguments
-      attr_another_name ||= symbol
+      poro_attribute_name ||= convertable_attribute_name
       @attribute_converter ||= {}
       
       if convert_block.class == Symbol
-        source_type = convert_block.to_s
-        target_type = convert_back_block.to_s
-        convert_block = lambda { |s,h| Converter.convert(s, eval(target_type), h)}
-        convert_back_block = lambda { |t,h| Converter.convert_back(t, eval(source_type), h)}
+        convertable_type = convert_block.to_s
+        poro_type = convert_back_block.to_s
+        convert_block = lambda { |source, hash| Converter.convert(source, eval(poro_type), hash) }
+        convert_back_block = lambda { |source, hash| Converter.convert(source, eval(convertable_type), hash) }
       else
-        convert_block ||= lambda { |source, hash| source }
-        convert_back_block ||= lambda { |target, hash| target }
+        convert_block ||= lambda { |source| source }
+        convert_back_block ||= lambda { |source| source }
       end
 
-
       # Create new ConversionMetadata
-      @attribute_converter[symbol] =ConversionMetadata.new(symbol, attr_another_name, convert_block, convert_back_block)
-      attr_accessor symbol
+      @attribute_converter[convertable_attribute_name] =ConversionMetadata.new(convertable_attribute_name, poro_attribute_name, convert_block, convert_back_block)
+      attr_accessor convertable_attribute_name
     end
   end
 
   # Represent conversion data of one property to another
   class ConversionMetadata
-    def initialize(source_prop_name, target_prop_name, convert, convert_back)
-      @source_property_name = source_prop_name
-      @target_property_name = target_prop_name
-      @convert_block = convert
-      @convert_back_block = convert_back
+    def initialize(convertable_attribute_name, poro_attribute_name, convert_from_convertable_block, convert_from_poro_block)
+      @convertable_attribute_name = convertable_attribute_name
+      @poro_attribute_name = poro_attribute_name
+      @convert_from_convertable_block = convert_from_convertable_block
+      @convert_from_poro_block = convert_from_poro_block
     end
 
-    attr_accessor :source_property_name
-    attr_accessor :target_property_name
-    attr_accessor :convert_block
-    attr_accessor :convert_back_block
+    attr_accessor :convertable_attribute_name
+    attr_accessor :poro_attribute_name
+    attr_accessor :convert_from_convertable_block
+    attr_accessor :convert_from_poro_block
   end
 end
