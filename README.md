@@ -1,6 +1,13 @@
 Converter gem
 ==========
 
+Latest updates
+---------------
+
+1. Merge convert and convert_back to one method (convert)
+2. Add default lambda creation for inner conversion (converting the inner attribute using the Converter, see down the page)
+3. Add convert_to instance method to class that includes Converter module
+
 Getting started
 ---------------
 
@@ -72,7 +79,7 @@ Result:
 
 we could now convert it to Person:
 
-    p = Converter.convert(p_dto, Person)
+    p = p_dto.convert_to Person
 
 Result:
 
@@ -82,7 +89,7 @@ Result:
 
 To Convert from Preson to PersonDTO user ConvertBack:
 
-    p_dto = Converter.convertBack(p, PersonDto)
+    p_dto = Converter.convert(p, PersonDto)
 
 Result:
 
@@ -147,7 +154,7 @@ Result:
 
 we could now convert it to Person:
 
-    p = Converter.convert(p_dto, Person)
+    p = p_dto.convert_to Person)
 
 Result:
 
@@ -158,7 +165,7 @@ Result:
 
 To Convert from Preson to PersonDTO user ConvertBack:
 
-    p_dto = Converter.convertBack(p, PersonDto)
+    p_dto = Converter.convert(p, PersonDto)
 
 Result:
 
@@ -187,7 +194,7 @@ Lets say dog has accessor to his person:
 now what will happend? well Converter has a support for it,
 the result of the conversion will do the expected:
 
-      p = Converter.convert(p_dto, Person)     
+      p = p_dto.convert_to Person    
 
 Result:
 
