@@ -7,6 +7,8 @@ Latest updates
 1. Merge convert and convert_back to one method (convert)
 2. Add default lambda creation for inner conversion (converting the inner attribute using the Converter, see down the page)
 3. Add convert_to instance method to class that includes Converter module
+4. Add copy_to instance method to class that includes Converter module
+5. Add copy method to Converter module
 
 Getting started
 ---------------

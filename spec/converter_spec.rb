@@ -2,8 +2,63 @@ require 'date'
 require_relative './spec_helper.rb'
 
 describe PersonDto do
-	it "should respond to convert" do
+	it "should respond to convert_to" do
 		PersonDto.new.should respond_to :convert_to
+	end
+
+	it "should respond to copy_to" do
+		PersonDto.new.should respond_to :copy_to
+	end
+
+	describe "#copy_to" do
+		before :all do
+			@person_dto = PersonDto.new do |p|
+				p.first_name = "Shuky"
+				p.last_name = "Chen"
+				p.old = 21
+				p.money = 15
+				p.update_time = DateTime.now
+				p.pappy = DogDto.new do |d|
+					d.age = 3
+					d.name = "rocky"
+					d.person = p
+				end
+			end
+
+			@person = Person.new
+			@person_dto.copy_to @person
+		end
+
+		it "should copy all values from personDto" do
+			@person.first_name.should equal @person_dto.first_name
+			@person.last_name.should equal @person_dto.last_name
+			@person.age.should equal @person_dto.old
+			@person.cash.to_int.should eql @person_dto.money
+		end
+
+		it "should have the same id" do
+			person  = Person.new
+			person.id = 1
+			lambda { @person_dto.copy_to person}.should_not change person, :id
+		end
+
+		it "should not override inner objects" do
+			person = Person.new
+			person.dog = Dog.new
+			person.dog.human = person
+			lambda { @person_dto.copy_to person}.should_not change person, :dog
+			person.dog.human.should equal(person)
+		end
+
+		it "should copy the inner object too" do
+			@person.dog.should_not be_nil
+			@person.dog.name.should equal @person_dto.pappy.name
+			@person.dog.age.should equal @person_dto.pappy.age
+		end
+
+		it "should have circurlar pointing" do
+			@person.dog.human.should equal(@person)
+		end
 	end
 
 	describe "#convert_to" do
@@ -56,6 +111,57 @@ describe PersonDto do
 end
 
 describe Converter do
+	
+	describe "#copy_to" do
+		before :all do
+			@person = Person.new do |p|
+				p.first_name = "Shuky"
+				p.last_name = "Chen"
+				p.age = 21
+				p.cash = 15.0
+				p.id = 5
+				p.dog = Dog.new do |d|
+					d.age = 3
+					d.name = "rocky"
+					d.human = p
+				end
+			end
+
+			@person_dto = PersonDto.new
+			Converter.copy @person, @person_dto
+		end
+
+		it "should copy all values from personDto" do
+			@person_dto.first_name.should equal @person.first_name
+			@person_dto.last_name.should equal @person.last_name
+			@person_dto.old.should equal @person.age
+			@person_dto.money.should eql @person.cash.to_int
+		end
+
+		it "should have the same id" do
+			person_dto = PersonDto.new
+			person_dto.update_time = DateTime.now
+			lambda { Converter.copy @person, person_dto}.should_not change person_dto, :update_time
+		end
+
+		it "should not override inner objects" do
+			person_dto = PersonDto.new
+			person_dto.pappy = DogDto.new
+			person_dto.pappy.person = person_dto
+			lambda { Converter.copy @person, person_dto}.should_not change person_dto, :pappy
+			person_dto.pappy.person.should equal(person_dto)
+		end
+
+		it "should copy the inner object too" do
+			@person_dto.pappy.should_not be_nil
+			@person_dto.pappy.name.should equal @person.dog.name
+			@person_dto.pappy.age.should equal @person.dog.age
+		end
+
+		it "should have circurlar pointing" do
+			@person_dto.pappy.person.should equal(@person_dto)
+		end
+	end
 
 	describe "#convert" do
 		before :all do
