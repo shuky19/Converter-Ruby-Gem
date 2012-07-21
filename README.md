@@ -1,5 +1,5 @@
 Converter gem
-==========
+===========
 
 Latest updates
 ---------------
