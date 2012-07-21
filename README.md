@@ -9,6 +9,8 @@ Latest updates
 3. Add convert_to instance method to class that includes Converter module
 4. Add copy_to instance method to class that includes Converter module
 5. Add copy method to Converter module
+6. Add clone instance method to class that includes Converter module
+7. Add clone method to Converter module
 
 Getting started
 ---------------

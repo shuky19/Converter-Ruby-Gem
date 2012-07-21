@@ -5,6 +5,10 @@ module Converter
     base.extend(ClassConverter)
   end
   
+  def clone
+    convert_to self.class
+  end
+
   def convert_to target_class
     Converter.convert self, target_class
   end
@@ -27,10 +31,14 @@ module Converter
     # Create new target instance
     hash[source] = target
     
-    # Gets source Conversion definition
-    # Check which one includes Converter module
+    # Check which of the objects includes Converter module
+    # and gets it's Conversion definition
     convertable_object = get_convertable_object source, target
     conversion_metadatas = convertable_object.class.class_eval { @attribute_converter}
+    
+    if source.class == target.class
+      conversion_metadatas = build_conversion_metadata_to_clone conversion_metadatas
+    end
 
     # update each accessor on the target according to the attr_converters
     conversion_metadatas.values.each do |conversion_metadata|
@@ -48,12 +56,32 @@ module Converter
   def self.convert(source, target_type, hash = {})
     copy source, target_type.new, hash
   end
+  
+  # Create new source.class instance according to the Conversion definition of source
+  # source should include Converter module
+  # @param [Any Class] source instance to copy from
+  # @return instance of source.class with data converted from source
+  def self.clone source
+    convert source, source.class  
+  end
 
   private
+
+    def self.build_conversion_metadata_to_clone conversion_metadatas
+      default_converter = lambda { |source| source }
+      new_conversion_metadata = {}
+      conversion_metadatas.keys.each do |key| 
+        metadata = conversion_metadatas[key]
+        new_conversion_metadata[key] = ConversionMetadata.new(metadata.convertable_attribute_name, metadata.convertable_attribute_name, default_converter, default_converter)
+      end
+
+      new_conversion_metadata
+    end
+
     def self.get_convertable_object source, target
       if source.class.included_modules.include?(Converter) && target.class.included_modules.include?(Converter)
         if source.class == target.class
-          i = 7
+          source
         else
           raise ArgumentError.new "Unable to select from two Convertable objects"
         end

@@ -10,6 +10,10 @@ describe PersonDto do
 		PersonDto.new.should respond_to :copy_to
 	end
 
+	it "should respond to clone" do
+		PersonDto.new.should respond_to :clone
+	end
+
 	describe "#copy_to" do
 		before :all do
 			@person_dto = PersonDto.new do |p|
@@ -68,6 +72,45 @@ describe PersonDto do
 
 		it "should have circurlar pointing" do
 			@person.dog.human.should equal(@person)
+		end
+
+		it "should be able to copy itself" do
+			person_dto = PersonDto.new
+			@person_dto.copy_to person_dto
+			person_dto.first_name.should equal @person_dto.first_name
+			person_dto.last_name.should equal @person_dto.last_name
+			person_dto.old.should equal @person_dto.old
+			person_dto.money.should equal @person_dto.money
+			person_dto.pappy.should equal @person_dto.pappy
+			person_dto.update_time.should_not equal @person_dto.update_time
+		end
+	end
+
+	describe "#clone" do
+		before :all do
+			@person_dto = PersonDto.new do |p|
+				p.first_name = "Shuky"
+				p.last_name = "Chen"
+				p.old = 21
+				p.money = 15
+				p.update_time = DateTime.now
+				p.pappy = DogDto.new do |d|
+					d.age = 3
+					d.name = "rocky"
+					d.person = p
+				end
+			end
+
+			@person_dto2 = @person_dto.clone
+		end
+
+		it "should clone itself" do
+			@person_dto2.first_name.should equal @person_dto.first_name
+			@person_dto2.last_name.should equal @person_dto.last_name
+			@person_dto2.old.should equal @person_dto.old
+			@person_dto2.money.should equal @person_dto.money
+			@person_dto2.pappy.should equal @person_dto.pappy
+			@person_dto2.update_time.should_not equal @person_dto.update_time
 		end
 	end
 
@@ -218,6 +261,34 @@ describe Converter do
 
 		it "should have circurlar pointing" do
 			@person_dto.pappy.person.should equal @person_dto
+		end
+	end
+
+	describe "#clone" do
+		before :all do
+			@person_dto = PersonDto.new do |p|
+				p.first_name = "Shuky"
+				p.last_name = "Chen"
+				p.old = 21
+				p.money = 15
+				p.update_time = DateTime.now
+				p.pappy = DogDto.new do |d|
+					d.age = 3
+					d.name = "rocky"
+					d.person = p
+				end
+			end
+
+			@person_dto2 = Converter.clone @person_dto
+		end
+
+		it "should clone itself" do
+			@person_dto2.first_name.should equal @person_dto.first_name
+			@person_dto2.last_name.should equal @person_dto.last_name
+			@person_dto2.old.should equal @person_dto.old
+			@person_dto2.money.should equal @person_dto.money
+			@person_dto2.pappy.should equal @person_dto.pappy
+			@person_dto2.update_time.should_not equal @person_dto.update_time
 		end
 	end
 end
