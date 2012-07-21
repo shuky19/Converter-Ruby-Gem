@@ -51,29 +51,36 @@ module Converter
 
   private
     def self.get_convertable_object source, target
-      if source.class.included_modules.include? Converter
+      if source.class.included_modules.include?(Converter) && target.class.included_modules.include?(Converter)
+        if source.class == target.class
+          i = 7
+        else
+          raise ArgumentError.new "Unable to select from two Convertable objects"
+        end
+      elsif source.class.included_modules.include? Converter
         source
       elsif target.class.included_modules.include? Converter
         target
       else
-        raise ArgumentError.new "One of the given classes should include Converter module"
+        raise ArgumentError.new "One of the given classes should include Converter module, classes: #{source.class}, #{target.class}"
       end
     end
 
     def self.convert_one_attribute source, target, conversion_metadata, is_source_convertable, hash
       source_attribute_name = is_source_convertable ? conversion_metadata.convertable_attribute_name : conversion_metadata.poro_attribute_name
       target_attribute_name = is_source_convertable ? conversion_metadata.poro_attribute_name : conversion_metadata.convertable_attribute_name
+      source_attribute_value = source.send(source_attribute_name)
       target_attribute_value = target.send(target_attribute_name)
       target_attribute_name = target_attribute_name.to_s.concat('=').to_sym
-      convert_block = conversion_metadata.get_converter(target_attribute_value, is_source_convertable)
+      convert_block = conversion_metadata.get_converter(source_attribute_value, target_attribute_value, is_source_convertable)
 
       # Convert from one type to another (by default doesn't do anything)
       if convert_block.parameters.count == 1
-        target_value = convert_block.call(source.send(source_attribute_name))
+        target_value = convert_block.call(source_attribute_value)
       elsif convert_block.parameters.count == 2
-        target_value = convert_block.call(source.send(source_attribute_name), hash)
+        target_value = convert_block.call(source_attribute_value, hash)
       else
-        target_value = convert_block.call(source.send(source_attribute_name), target_attribute_value, hash)
+        target_value = convert_block.call(source_attribute_value, target_attribute_value, hash)
       end
 
       target.send(target_attribute_name, target_value)
@@ -128,12 +135,18 @@ module Converter
     attr_accessor :copy_from_convertable_block
     attr_accessor :copy_from_poro_block
 
-    def get_converter target_old_attribute_value, is_source_convertable
-      if target_old_attribute_value && is_source_convertable
-        copy_from_convertable_block
-      elsif target_old_attribute_value && !is_source_convertable
-        copy_from_poro_block
-      elsif !target_old_attribute_value && is_source_convertable
+    def get_converter source_attribute_value, target_old_attribute_value, is_source_convertable
+      # Check if one of the attributes is Convertable
+      has_convertable_object = source_attribute_value.class.included_modules.include?(Converter) || target_old_attribute_value.class.included_modules.include?(Converter)
+
+      # Copy between inner attribute only if they are convertale and exists
+      if has_convertable_object && target_old_attribute_value
+        if is_source_convertable
+          copy_from_convertable_block
+        else
+          copy_from_poro_block
+        end
+      elsif is_source_convertable
         convert_from_convertable_block
       else
         convert_from_poro_block

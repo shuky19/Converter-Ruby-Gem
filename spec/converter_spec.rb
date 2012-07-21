@@ -26,6 +26,16 @@ describe PersonDto do
 			end
 
 			@person = Person.new
+			@person.first_name = "not Shuky"
+			@person.last_name = "not Chen"
+			@person.age = 5
+			@person.id = 3
+			@person.cash = 3.02
+			@person.dog = Dog.new
+			@person.dog.age = 2
+			@person.dog.name = "not rocky"
+			@person.dog.human = @person
+			
 			@person_dto.copy_to @person
 		end
 
