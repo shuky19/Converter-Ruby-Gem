@@ -83,7 +83,7 @@ module Converter
         if source.class == target.class
           source
         else
-          raise ArgumentError.new "Unable to select from two Convertable objects"
+          raise ArgumentError.new "Unable to select between two Convertable objects. classes: #{source.class}, #{target.class}"
         end
       elsif source.class.included_modules.include? Converter
         source
@@ -95,15 +95,22 @@ module Converter
     end
 
     def self.convert_one_attribute source, target, conversion_metadata, is_source_convertable, hash
+      # Get attribute names from conversion metadata
       source_attribute_name = is_source_convertable ? conversion_metadata.convertable_attribute_name : conversion_metadata.poro_attribute_name
       target_attribute_name = is_source_convertable ? conversion_metadata.poro_attribute_name : conversion_metadata.convertable_attribute_name
+      target_attribute_name = target_attribute_name.to_s.concat('=').to_sym
+
+      # Get attribute values
       source_attribute_value = source.send(source_attribute_name)
       target_attribute_value = target.send(target_attribute_name)
-      target_attribute_name = target_attribute_name.to_s.concat('=').to_sym
+
+      # Get converter lambda (to convert between the two values)
       convert_block = conversion_metadata.get_converter(source_attribute_value, target_attribute_value, is_source_convertable)
 
       # Convert from one type to another (by default doesn't do anything)
-      if convert_block.parameters.count == 1
+      if !source_attribute_value
+        target_attribute_value = nil
+      elsif convert_block.parameters.count == 1
         target_value = convert_block.call(source_attribute_value)
       elsif convert_block.parameters.count == 2
         target_value = convert_block.call(source_attribute_value, hash)
