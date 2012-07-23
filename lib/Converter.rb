@@ -14,6 +14,7 @@ module Converter
   end
 
   def copy_to target
+    #this shuld not be
       Converter.copy self, target
   end
 
