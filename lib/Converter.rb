@@ -14,7 +14,7 @@ module Converter
   end
 
   def copy_to target
-    #this shuld not be
+    #this shuld not b
       Converter.copy self, target
   end
 
@@ -105,6 +105,10 @@ module Converter
       source_attribute_name = is_source_convertable ? conversion_metadata.convertable_attribute_name : conversion_metadata.poro_attribute_name
       target_attribute_name = is_source_convertable ? conversion_metadata.poro_attribute_name : conversion_metadata.convertable_attribute_name
 
+      if not_all_method_defined source, target, source_attribute_name, target_attribute_name
+        return
+      end
+
       # Get attribute values
       source_attribute_value = source.send(source_attribute_name)
       target_attribute_value = target.send(target_attribute_name)
@@ -123,6 +127,11 @@ module Converter
       end
 
       target.send(target_attribute_name, target_value)
+    end
+
+    def self.not_all_method_defined source, target, source_attr, target_attr
+      ( !source.class.method_defined?(source_attr.to_sym) && !source.singleton_class.method_defined?(source_attr.to_sym)) ||
+      ( !target.class.method_defined?(target_attr.to_sym) && !target.singleton_class.method_defined?(target_attr.to_sym))
     end
 
   public

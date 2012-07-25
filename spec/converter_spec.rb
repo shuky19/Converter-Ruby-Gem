@@ -32,7 +32,6 @@ describe PersonDto do
 			@person = Person.new
 			@person.first_name = "not Shuky"
 			@person.last_name = "not Chen"
-			@person.age = 5
 			@person.id = 3
 			@person.cash = 3.02
 			@person.dog = Dog.new
@@ -46,7 +45,6 @@ describe PersonDto do
 		it "should copy all values from personDto" do
 			@person.first_name.should equal @person_dto.first_name
 			@person.last_name.should equal @person_dto.last_name
-			@person.age.should equal @person_dto.old
 			@person.cash.to_int.should eql @person_dto.money
 		end
 
@@ -139,7 +137,6 @@ describe PersonDto do
 		it "Should have the same values" do
 			@person.first_name.should equal @person_dto.first_name
 			@person.last_name.should equal @person_dto.last_name
-			@person.age.should equal @person_dto.old
 		end
 
 		it "Should convert data types" do
@@ -170,7 +167,6 @@ describe Converter do
 			@person = Person.new do |p|
 				p.first_name = "Shuky"
 				p.last_name = "Chen"
-				p.age = 21
 				p.cash = 15.0
 				p.id = 5
 				p.dog = Dog.new do |d|
@@ -187,7 +183,6 @@ describe Converter do
 		it "should copy all values from personDto" do
 			@person_dto.first_name.should equal @person.first_name
 			@person_dto.last_name.should equal @person.last_name
-			@person_dto.old.should equal @person.age
 			@person_dto.money.should eql @person.cash.to_int
 		end
 
@@ -222,7 +217,6 @@ describe Converter do
 				p.cash = 15.0
 				p.first_name = "Shuky"
 				p.last_name = "Chen"
-				p.age = 21
 				p.id = 1
 				p.dog = Dog.new do |d|
 					d.age = 3
@@ -241,7 +235,6 @@ describe Converter do
 		it "Should have the same values" do
 			@person_dto.first_name.should equal @person_dto.first_name
 			@person_dto.last_name.should equal @person.last_name
-			@person_dto.old.should equal @person.age
 		end
 
 		it "Should convert data types" do

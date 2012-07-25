@@ -7,7 +7,6 @@ class Person
 
 	attr_accessor :first_name
 	attr_accessor :last_name
-	attr_accessor :age
 	attr_accessor :cash
 	attr_accessor :id
 	attr_accessor :dog
